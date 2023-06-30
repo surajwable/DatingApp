@@ -1,25 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { AccountService } from './_services/account.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit{
   title = 'Dating app';
-  //declaring a variable users of any data type to store users of any type like string, list,number
-  users : any;
 
-  //constructor for dependency injection of HttpClint to be able to send Http requests 
-  constructor (private http : HttpClient){}
+  //constructor for dependency injection
+  constructor (private accountService : AccountService){}
   
   ngOnInit(): void {
-    this.http.get('https://localhost:5001/api/users').subscribe({
-      next: response => this.users = response,
-      error: error => console.log(error),
-      complete: () => console.log('Request has completed')
+    this.setCurrentUser();
+  }
 
-    })
+  setCurrentUser(){
+    const userString = localStorage.getItem('user');
+    if(!userString) return;
+    const user = JSON.parse(userString);
+    this.accountService.setCurrentUser(user);
   }
 }
